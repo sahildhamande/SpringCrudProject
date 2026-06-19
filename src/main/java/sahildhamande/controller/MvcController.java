@@ -112,6 +112,7 @@ public class MvcController {
 	}
     
     //file uploading 
+    /*
     @PostMapping("/upload")
     public String uploadFile(SubjectModel model,Map<String,String> map)
     {
@@ -126,10 +127,11 @@ public class MvcController {
        }
        else
        {
-    	   String uploadPdf=WebAppInitializer.imgFilepath;
+    	   String uploadPdf=WebAppInitializer.docFilepath;
     	   String uploadImg=WebAppInitializer.imgFilepath;
     	   File docDestination=new File(uploadPdf+pdf.getOriginalFilename());
     	   File imdDestination=new File(uploadImg+image.getOriginalFilename());
+    	   System.out.println("Image Path = " + imdDestination.getAbsolutePath());
     	   try {
     		   pdf.transferTo(docDestination);
     		   image.transferTo(imdDestination);
@@ -150,7 +152,47 @@ public class MvcController {
        }
     	return "subject";
     }
-    
+    */
+    @PostMapping("/upload")
+    public String uploadFile(SubjectModel model, Map<String,String> map) {
+
+        MultipartFile image = model.getImg();
+        MultipartFile pdf = model.getPdf();
+
+        if(image.isEmpty() || pdf.isEmpty()) {
+            map.put("msg", "File not selected properly");
+        }
+        else {
+            try {
+                String uploadPdf = WebAppInitializer.docFilepath;
+                String uploadImg = WebAppInitializer.imgFilepath;
+
+                File docDestination =
+                        new File(uploadPdf + pdf.getOriginalFilename());
+
+                File imgDestination =
+                        new File(uploadImg + image.getOriginalFilename());
+
+                System.out.println("PDF Path = " + docDestination.getAbsolutePath());
+                System.out.println("IMG Path = " + imgDestination.getAbsolutePath());
+
+                pdf.transferTo(docDestination);
+                image.transferTo(imgDestination);
+
+                boolean b = service.isAddSubject(model);
+
+                map.put("msg",
+                        b ? "Subject Added Successfully"
+                          : "Subject Not Added");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("msg", "Upload Failed");
+            }
+        }
+
+        return "subject";
+    }
     @GetMapping("/viewsubject")
     public String viewSubject(Map<String,List<Object[]>>map) {
     	List<Object[]> list=service.getAllSubjects();
@@ -176,7 +218,11 @@ public class MvcController {
     	map.put("courceList", list);
     	return "signup";
     }
-  
+     //back from regestration done now user want to login
+    @GetMapping("/backtologin")
+    public String backLogin() {
+    	return "myloginpage";
+    }
     
     @PostMapping("saveuser")
     public RedirectView saveRegisterUser(RegisterModel register) {

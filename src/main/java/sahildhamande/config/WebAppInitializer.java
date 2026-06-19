@@ -33,10 +33,12 @@ public class WebAppInitializer implements WebApplicationInitializer{
 		servlet.setLoadOnStartup(1);
 		
 		//creating folder for pdf file and img
+		
 		String path=servletContext.getRealPath("/");
+		/*
 	//	System.out.println(path);
 		File docFile=new File("D:\\Spring-project\\SpringMvcFirstCrudApp\\src\\main\\webapp\\doc\\");
-		String docFilepath=docFile.toString();
+		 docFilepath=docFile.toString() +"\\";
 		
 		if(!docFile.exists())
 		{
@@ -50,7 +52,17 @@ public class WebAppInitializer implements WebApplicationInitializer{
 		}
 		docFilepath=path+"doc\\";
 		
-		imgFilepath=imgFile.toString();
+		imgFilepath = imgFile.toString() + "\\";
+		
+		*/
+		imgFilepath = path + "img\\";
+		docFilepath = path + "doc\\";
+
+		new File(imgFilepath).mkdirs();
+		new File(docFilepath).mkdirs();
+
+		System.out.println("IMG PATH = " + imgFilepath);
+		System.out.println("DOC PATH = " + docFilepath);
 		//configuration of file uploading
 		MultipartConfigElement multiConfigElement=new MultipartConfigElement
 				("D:\\Spring-project\\SpringMvcFirstCrudApp\\src\\main\\webapp\\img", //location
